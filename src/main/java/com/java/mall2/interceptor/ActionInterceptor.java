@@ -1,0 +1,46 @@
+package com.java.mall2.interceptor;
+
+import com.alibaba.fastjson.JSONObject;
+import com.java.mall2.resp.CommonResp;
+import com.java.mall2.resp.UserLoginResp;
+import com.java.mall2.util.LoginUserContext;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+
+import java.io.IOException;
+
+@Component
+public class ActionInterceptor implements HandlerInterceptor {
+
+    private static final Logger LOG = LoggerFactory.getLogger(com.java.mall2.interceptor.ActionInterceptor.class);
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws IOException {
+        // OPTIONS请求不做校验,
+        // 前后端分离的架构, 前端会发一个OPTIONS请求先做预检, 对预检请求不做校验
+        if("OPTIONS".equals(request.getMethod().toUpperCase())){
+            return true;
+        }
+
+//        UserLoginResp userLoginResp = LoginUserContext.getUser();
+//        if ("admin".equals(userLoginResp.getLoginName())) {
+//            // admin用户不拦截
+//            return true;
+//        }
+
+        LOG.info("操作被拦截");
+        response.setStatus(HttpStatus.OK.value());
+        CommonResp commonResp = new CommonResp();
+        commonResp.setSuccess(false);
+        commonResp.setMessage("哈哈，操作被拦截了，你就当操作成功了！示例网站暂不开放增删改操作");
+        response.setContentType("application/json;charset=UTF-8");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().print(JSONObject.toJSON(commonResp));
+        return false;
+    }
+}

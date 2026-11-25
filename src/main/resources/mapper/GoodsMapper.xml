@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.java.mall2.mapper.GoodsMapper" >
+
+    <select id="selectAllGood" resultType="com.java.mall2.resp.GoodsResp">
+        SELECT g.id,g.goods_name,g.cover_img,g.goods_desc,s.size,s.color,
+        s.price sku_price,s.stock sku_stock,gc.name cat_name
+        FROM goods g LEFT JOIN goods_category_rel rel ON g.id = rel.goods_id
+        LEFT JOIN goods_category gc ON rel.category_id = gc.id
+        LEFT JOIN goods_sku s ON g.id = s.goods_id
+    </select>
+
+</mapper>
